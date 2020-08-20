@@ -1,6 +1,6 @@
 # Error in webpack 5 compiling vega
 
-This repository reproduces an issue we have compiling vega with webpack 5.0.0-beta.27 (and previous betas) in production mode. Compiling with webpack 4.44.1 succeeds, and compiling with webpack 5.0.0-beta.27 in development mode succeeds.
+This repository reproduces an issue we have compiling a generator function with webpack 5.0.0-beta.27 (and previous betas) in production mode. Compiling with webpack 4.44.1 succeeds, and compiling with webpack 5.0.0-beta.27 in development mode succeeds.
 
 ```sh
 yarn
@@ -11,34 +11,28 @@ yarn build:prod # successful in webpack 4.44.1, error in webpack 5.0.0-beta.27
 The error we are seeing in webpack 5.0.0-beta.27 (`yarn run build:prod above) is:
 
 ```sh
-ERROR in ./node_modules/vega/index.js + 950 modules
-Unexpected token (1:71)
-| /* harmony default export */ function __WEBPACK_MODULE_DEFAULT_EXPORT__*(values, valueof) {
-|   if (valueof == null) {
-|     for (let value of values) {
-while analysing module /[snip]/vega-webpack-5/node_modules/vega-statistics/src/numbers.js for concatenation
+ERROR in main.js from Terser
+Unexpected token operator «*», expected punc «(» [main.js:3,64]
+    at ee (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:19541)
+    at c (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28244)
+    at l (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28335)
+    at p (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28475)
+    at _ (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28587)
+    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:38014
+    at x (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:38144)
+    at F (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:34820)
+    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:32263
+    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28976
 ```
 
-It seems that the problem is in https://github.com/vega/vega/blob/v5.14.0/packages/vega-statistics/src/numbers.js, which is fairly small:
+Here is the function we are compiling:
 
 ```js
-export default function*(values, valueof) {
-  if (valueof == null) {
-    for (let value of values) {
-      if (value != null && value !== '' && (value = +value) >= value) {
-        yield value;
-      }
-    }
-  } else {
-    let index = -1;
-    for (let value of values) {
-      value = valueof(value, ++index, values);
-      if (value != null && value !== '' && (value = +value) >= value) {
-        yield value;
-      }
-    }
+export default function*() {
+  for (let i=0; i<10; i++) {
+    yield i;
   }
 }
 ```
 
-Perhaps for some reason webpack is incorrectly parsing the default export of a generator function when in production mode?
+It seems for some reason terser is incorrectly parsing the default export of a generator function, and terser is only run in webpack production mode?
