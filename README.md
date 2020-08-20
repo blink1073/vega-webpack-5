@@ -8,21 +8,23 @@ yarn build # successful in webpack 4.44.1 and 5.0.0-beta.27
 yarn build:prod # successful in webpack 4.44.1, error in webpack 5.0.0-beta.27
 ```
 
+We have manually forced `terser-webpack-plugin` to be `^4` using the yarn resolutions metadata in package.json, so `terser` is 5.2.0 and `terser-webpack-plugin` is 4.1.0.
+
 The error we are seeing in webpack 5.0.0-beta.27 (`yarn run build:prod` above) is:
 
 ```sh
 ERROR in main.js from Terser
 Unexpected token operator «*», expected punc «(» [main.js:3,64]
-    at ee (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:19541)
-    at c (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28244)
-    at l (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28335)
-    at p (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28475)
-    at _ (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28587)
-    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:38014
-    at x (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:38144)
-    at F (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:34820)
-    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:32263
-    at /[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1:28976
+    at js_error (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:538:11)
+    at croak (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1251:9)
+    at token_error (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1259:9)
+    at expect_token (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1272:9)
+    at expect (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1275:36)
+    at parameters (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1771:9)
+    at _function_body (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:2049:19)
+    at function_ (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1698:20)
+    at statement (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1439:24)
+    at _embed_tokens_wrapper (/[snip]/vega-webpack-5/node_modules/terser/dist/bundle.min.js:1309:26)
 ```
 
 Here is the function we are compiling:
@@ -35,6 +37,3 @@ export default function*() {
 }
 ```
 
-We see the error with `terser` 4.8.0 and `terser-webpack-plugin` 3.1.0.
-
-If I change the webpack version in `package.json` to `^4`, `yarn run build:prod` now works, and the generated file contains the generator function. In this case, `terser` 4.8.0 is still installed, but `terser-webpack-plugin` is downgraded to 1.4.5.
