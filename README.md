@@ -35,4 +35,6 @@ export default function*() {
 }
 ```
 
-It seems for some reason terser is incorrectly parsing the default export of a generator function, and terser is only run in webpack production mode?
+We see the error with `terser` 4.8.0 and `terser-webpack-plugin` 3.1.0.
+
+If I change the webpack version in `package.json` to `^4`, `yarn run build:prod` now works, and the generated file contains the generator function. In this case, `terser` 4.8.0 is still installed, but `terser-webpack-plugin` is downgraded to 1.4.5.
