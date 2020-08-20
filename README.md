@@ -8,7 +8,7 @@ yarn build # successful in webpack 4.44.1 and 5.0.0-beta.27
 yarn build:prod # successful in webpack 4.44.1, error in webpack 5.0.0-beta.27
 ```
 
-The error we are seeing in webpack 5.0.0-beta.27 (`yarn run build:prod above) is:
+The error we are seeing in webpack 5.0.0-beta.27 (`yarn run build:prod` above) is:
 
 ```sh
 ERROR in main.js from Terser
