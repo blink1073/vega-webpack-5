@@ -1,2 +1,5 @@
-const vega = require('vega-embed');
-console.log(vega);
+export default function*() {
+    for (let i=0; i<10; i++) {
+        yield i;
+    }
+}

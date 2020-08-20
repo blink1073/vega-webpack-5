@@ -4,9 +4,6 @@
     "build:prod": "webpack --mode production"
   },
   "dependencies": {
-    "vega": "^5.14.0",
-    "vega-embed": "^6.10.0",
-    "vega-lite": "^4.14.1"
   },
   "devDependencies": {
     "webpack": "5.0.0-beta.27",
